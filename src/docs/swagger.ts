@@ -1,76 +1,26 @@
-import swaggerUi from "swagger-ui-express";
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { Express } from 'express';
 
-const swaggerDocument = {
-  openapi: "3.0.0",
-  info: {
-    title: "API Documentação",
-    description: "Documentação da API sem dependência de terceiros",
-    version: "1.0.0",
-  },
-  servers: [
-    {
-      url: "http://localhost:3000",
-      description: "Servidor Local",
+const options: swaggerJsDoc.Options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API KnowHive',
+      version: '1.0.0',
+      description: 'Documentação da API usando Swagger',
     },
-  ],
-  paths: {
-    "/users": {
-      get: {
-        summary: "Retorna todos os usuários",
-        description: "Retorna uma lista de usuários cadastrados.",
-        responses: {
-          200: {
-            description: "Lista de usuários retornada com sucesso.",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: { type: "integer" },
-                      name: { type: "string" },
-                      email: { type: "string" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
+    servers: [
+      {
+        url: 'http://localhost:3000', // Alterar conforme o ambiente
       },
-    },
-    "/questions": {
-      get: {
-        summary: "Retorna todas as questões",
-        description: "Retorna uma lista de questões cadastradas.",
-        responses: {
-          200: {
-            description: "Lista de questões retornada com sucesso.",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      id: { type: "integer" },
-                      title: { type: "string" },
-                      description: { type: "string" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
+    ],
   },
+  apis: ['./src/routes/*.ts'], // Aponta para as rotas
 };
 
-const setupSwagger = (app: any) => {
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-};
+const swaggerSpec = swaggerJsDoc(options);
 
-export default setupSwagger;
+export const setupSwagger = (app: Express) => {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+};

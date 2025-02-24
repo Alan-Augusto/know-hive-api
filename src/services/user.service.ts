@@ -2,8 +2,8 @@ import { UserRepository } from "../repositories/user.repository";
 
 export class UserService {
     private userRepository = new UserRepository();
-
-    async getUsers() {
-        return await this.userRepository.findAll();
+    
+    async existsByEmail(email: string) {
+        return await this.userRepository.existsByEmail(email);
     }
 }
