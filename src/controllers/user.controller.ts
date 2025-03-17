@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
+import { ApiDescription, ApiParam } from "../decorators/swagger";
 
 export class UserController {
   private userService = new UserService();
   
+  @ApiDescription("Verifica se um usuário existe pelo e-mail")
+  @ApiParam("email", "string")
   async existsByEmail(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
@@ -20,3 +23,4 @@ export class UserController {
   }
   
 }
+
