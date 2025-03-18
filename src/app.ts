@@ -1,18 +1,22 @@
-import express from 'express';
-import { setupSwagger } from './docs/swagger';
-import userRoutes from './routes/user.routes';
-import questionRoutes from './routes/question.routes';
-import cors from 'cors';
+import questionRoutes from "./routes/question.routes";
+import userRoutes from "./routes/user.routes";
 
-const app = express();
-app.use(express.json());
-app.use(cors());
 
-// Rotas
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger-output.json')
+const express = require('express')
+const app = express()
+
+
+// Entidades
 app.use('/users', userRoutes);
 app.use('/questions', questionRoutes);
 
-// Configurar Swagger
-setupSwagger(app);
+// Documentação
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 export default app;
+
+function cors(): any {
+    throw new Error("Function not implemented.");
+}

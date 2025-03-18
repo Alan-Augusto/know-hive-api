@@ -1,8 +1,17 @@
-import swaggerUi from "swagger-ui-express";
-import { Express } from "express";
-import { generateSwaggerDocs } from "../config/swaggerGenerator";
+const swaggerAutogen = require('swagger-autogen')();
 
-export const setupSwagger = (app: Express) => {
-  const swaggerSpec = generateSwaggerDocs(); // Gera a documentação
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const doc = {
+  info: {
+    title: 'My API',
+    description: 'Description'
+  },
+  host: 'localhost:3000'
 };
+
+const outputFile = '../swagger-output.json';
+const routes = ['../routes/user.routes.ts', '../routes/question.routes.ts'];
+
+/* NOTE: If you are using the express Router, you must pass in the 'routes' only the 
+root file where the route starts, such as index.js, app.js, routes.js, etc ... */
+
+swaggerAutogen(outputFile, routes, doc);
