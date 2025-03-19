@@ -1,7 +1,12 @@
-import { Request, Response } from "express";
+import { Router } from 'express';
+import { QuestionService } from '../services/question.service';
 
-export class QuestionController {
-  async getAllQuestions(req: Request, res: Response): Promise<void> {
-    // method implementation
-  }
-}
+const router = Router();
+const questionService = new QuestionService();
+
+router.get('/', (req, res) => {
+    // #swagger.tags = ['Users']
+    
+});
+
+export default router;

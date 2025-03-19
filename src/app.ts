@@ -1,16 +1,17 @@
-import questionRoutes from "./routes/question.routes";
-import userRoutes from "./routes/user.routes";
-
+import questionController from "./controllers/question.controller";
+import userController from "./controllers/user.controller";
 
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger-output.json')
 const express = require('express')
-const app = express()
 
+const app = express()
+// Middleware para parsing de JSON
+app.use(express.json());
 
 // Entidades
-app.use('/users', userRoutes);
-app.use('/questions', questionRoutes);
+app.use('/users', userController);
+app.use('/questions', questionController);
 
 // Documentação
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))

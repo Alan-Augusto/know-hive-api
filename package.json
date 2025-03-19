@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "migrate": "npx node-pg-migrate up --migrations-dir src/migrations",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "npm run swagger && ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "npm run migrate && node dist/server.js",
     "swagger": "node ./src/docs/swagger.ts",
     "build": "tsc"
