@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserService } from "../services/user.service";
 import { User } from "../entities/user";
-import { resultError } from "../utils/returns";
+import { resultError, resultSuccess } from "../utils/returns.utils";
 
 const router = Router();
 const userService = new UserService();
@@ -10,37 +10,33 @@ router.get("/existsByEmail/:email", async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.description = 'Endpoint to check if the email exists in the database.'
     try {
-        const { email } = req.params;
-        if (!email) {
-            res.status(400).json(resultError("Email não informado"));
-            return;
-        }
+        const { email } = req.params; // Pega o e-mail do parâmetro
         const exists = await userService.existsByEmail(email);
-        res.json(exists);
-    } catch (error) {
+  
+        if (exists) {
+            res.json(resultSuccess("Email já cadastrado", exists));
+        } else {
+            res.json(resultSuccess("Email não cadastrado", exists));
+        }
+      } catch (error) {
         res.status(500).json(resultError("Erro ao verificar email"));
-    }
+      }
+        
 });
 
 router.post("/register", async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.description = 'Endpoint to register a user.'
-    /*#swagger.parameters['body'] = {
-        in: 'body',
-        description: 'Dados do usuário.'
-    }
-    */
+    // #swagger.parameters['body'] = { in: 'body', description: 'Dados do usuário.' }
     try {
         const { email, password, name, profile_picture_url } = req.body;
-
         const user = new User({ email, password, name, profile_picture_url });
-        if(!user.valid()) {
-            res.status(400).json(resultError(user.error() || 'Erro ao validar usuário'));
-        }
 
         const result = await userService.register(user.getValues());
-        
-        res.json(result);
+        if (result === null) {
+            res.status(400).json(resultError("Usuário já cadastrado"));
+        }
+        res.json(resultSuccess("Usuário cadastrado com sucesso", result));
     } catch (error) {
         res.status(500).json(resultError("Erro ao registrar usuário"));
     }

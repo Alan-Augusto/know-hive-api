@@ -1,4 +1,4 @@
-import { IRetorno } from "../entities/retorno";
+import { IReturn } from "../entities/return";
 
 export class BaseService{
 
