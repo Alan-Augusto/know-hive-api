@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "My API",
-    "description": "Description",
+    "title": "Know Hive - API",
+    "description": "Endpoints de consulta da API do Know Hive",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -11,18 +11,38 @@
     "http"
   ],
   "paths": {
-    "/existsByEmail/{email}": {
+    "/users/existsByEmail/{email}": {
       "get": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint to check if the email exists in the database.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/": {
+    "/questions/": {
       "get": {
+        "tags": [
+          "Users"
+        ],
         "description": "",
         "responses": {
           "default": {

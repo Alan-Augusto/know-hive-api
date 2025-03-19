@@ -5,6 +5,9 @@ const router = Router();
 const questionController = new QuestionController();
 
 
-router.get('/', questionController.getAllQuestions.bind(questionController));
+router.get('/', (req, res) => {
+    // #swagger.tags = ['Users']
+    questionController.getAllQuestions(req, res);
+});
 
 export default router;

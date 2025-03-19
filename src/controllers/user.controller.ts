@@ -5,7 +5,6 @@ export class UserController {
   private userService = new UserService();
   
   async existsByEmail(req: Request, res: Response): Promise<void> {
-    //#swagger.tags = ['Users']
     try {
       const { email } = req.params;
       if (!email) {
