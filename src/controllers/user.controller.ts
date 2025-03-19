@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { UserService } from "../services/user.service";
 import { User } from "../entities/user";
+import { resultError } from "../utils/returns";
 
 const router = Router();
 const userService = new UserService();
@@ -11,13 +12,13 @@ router.get("/existsByEmail/:email", async (req, res) => {
     try {
         const { email } = req.params;
         if (!email) {
-            res.status(400).json({ error: "Email é obrigatório" });
+            res.status(400).json(resultError("Email não informado"));
             return;
         }
         const exists = await userService.existsByEmail(email);
-        res.json({ exists });
+        res.json(exists);
     } catch (error) {
-        res.status(500).json({ error: "Erro ao verificar email" });
+        res.status(500).json(resultError("Erro ao verificar email"));
     }
 });
 
@@ -34,14 +35,14 @@ router.post("/register", async (req, res) => {
 
         const user = new User({ email, password, name, profile_picture_url });
         if(!user.valid()) {
-            res.status(400).json({ error: user.error() });
+            res.status(400).json(resultError(user.error() || 'Erro ao validar usuário'));
         }
 
         const result = await userService.register(user.getValues());
         
         res.json(result);
     } catch (error) {
-        res.status(500).json({ error: "Erro ao registrar usuário" });
+        res.status(500).json(resultError("Erro ao registrar usuário"));
     }
 });
 
