@@ -1,3 +1,5 @@
+import { Response } from "express";
+import { sendError } from "../utils/returns.utils";
 export interface IEntity {
   id?: number;
   [key: string]: any;  // Permite que outras propriedades sejam adicionadas
@@ -46,5 +48,10 @@ export class BaseEntity<T extends IEntity> {
     return this._values;
   }
   
+  public handleValidation(res: Response, messageError:string = 'Entidade inválida.'): void {
+    if (!this.isValid) {
+      sendError(res, this.error()||messageError);
+    }
+  }
   
 }

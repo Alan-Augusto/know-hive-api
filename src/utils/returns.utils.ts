@@ -1,3 +1,4 @@
+import { Response } from "express";
 import { IReturn } from "../entities/return";
 
 export function resultError(mensagem:string):IReturn{
@@ -18,6 +19,12 @@ export function processReturn(value:any, successMessage?:string, errorMessage?:s
     }
 }
 
-export function isValueValid(value:any):boolean{
-    return value != null && value != undefined;
-}
+// Função para enviar resposta de sucesso
+export function sendSuccess(res: Response, message: string, data: any){
+    res.json(resultSuccess(message, data));
+};
+
+// Função para enviar resposta de erro
+export function sendError(res: Response, message: string, statusCode: number = 500){
+    res.status(statusCode).json(resultError(message));
+};
