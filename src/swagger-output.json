@@ -69,6 +69,36 @@
         }
       }
     },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint to authenticate a user.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/questions/": {
       "get": {
         "tags": [

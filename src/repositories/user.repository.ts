@@ -14,4 +14,13 @@ export class UserRepository {
         );
         return result.rows[0] as IUser;
     }
+
+    async login(email: string, password: string): Promise<IUser | null> {
+        console.log("service", email, password);
+
+        const result = await pool.query("SELECT * FROM users WHERE email = $1 AND password = $2", [email, password]);
+
+        console.log("SQL ->", result.rows);
+        return result.rowCount > 0 ? (result.rows[0] as IUser) : null;
+    }
 }

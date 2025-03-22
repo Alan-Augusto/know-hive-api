@@ -1,5 +1,6 @@
-import { IUser, User } from "../entities/user";
+import { IUser } from "../entities/user";
 import { UserRepository } from "../repositories/user.repository";
+import { generateToken } from "../utils/authorization.util";
 import { BaseService } from "./base.service";
 
 export class UserService extends BaseService {
@@ -15,5 +16,16 @@ export class UserService extends BaseService {
       return null;
     }
     return await this.userRepository.register(user); // Retorna o usuário registrado
+  }
+
+  async login(email: string, password: string): Promise<{ user: IUser, token: string } | null> {
+    console.log("service", email, password);
+
+    const user:IUser = await this.userRepository.login(email, password) as IUser;
+    if (user != null) {
+      const token = generateToken(user);
+      return { user, token };
+    }
+    return null;
   }
 }

@@ -10,6 +10,8 @@ router.get("/existsByEmail/:email", async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.description = 'Endpoint to check if the email exists in the database.'
     const { email } = req.params;
+    if (!email) return sendError(res, "Email não informado", 400);
+
     try {
         const exists = await userService.existsByEmail(email);
         const message = exists ? "Email já cadastrado" : "Email não cadastrado";
@@ -24,18 +26,6 @@ router.post("/register", async (req, res) => {
     // #swagger.tags = ['User']
     // #swagger.description = 'Endpoint to register a user.'
     // #swagger.parameters['body'] = { in: 'body', description: 'Dados do usuário.' }
-    // try {
-    //     const { email, password, name, profile_picture_url } = req.body;
-    //     const user = new User({ email, password, name, profile_picture_url });
-
-    //     const result = await userService.register(user.getValues());
-    //     if (result === null) {
-    //         res.status(400).json(resultError("Usuário já cadastrado"));
-    //     }
-    //     res.json(resultSuccess("Usuário cadastrado com sucesso", result));
-    // } catch (error) {
-    //     res.status(500).json(resultError("Erro ao registrar usuário"));
-    // }
     const { email, password, name, profile_picture_url } = req.body;
     const user = new User({ email, password, name, profile_picture_url });
 
@@ -49,6 +39,23 @@ router.post("/register", async (req, res) => {
         sendSuccess(res, "Usuário cadastrado com sucesso", result);
     } catch (error) {
         sendError(res, "Erro ao registrar usuário");
+    }
+});
+
+router.post("/login", async (req, res) => {
+    // #swagger.tags = ['User']
+    // #swagger.description = 'Endpoint to authenticate a user.'
+    const { email, password } = req.body;
+    if(!email || !password) return sendError(res, "Email e senha são obrigatórios", 400);
+    console.log("controller", email, password);
+    try {
+        const result = await userService.login(email, password);
+        if (!result) {
+            return sendError(res, "Credenciais inválidas", 401);
+        }
+        sendSuccess(res, "Login realizado com sucesso", result);
+    } catch (error) {
+        sendError(res, "Erro ao realizar login");
     }
 });
 
