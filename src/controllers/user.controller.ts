@@ -47,7 +47,6 @@ router.post("/login", async (req, res) => {
     // #swagger.description = 'Endpoint to authenticate a user.'
     const { email, password } = req.body;
     if(!email || !password) return sendError(res, "Email e senha são obrigatórios", 400);
-    console.log("controller", email, password);
     try {
         const result = await userService.login(email, password);
         if (!result) {

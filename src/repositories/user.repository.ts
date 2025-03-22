@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import pool from "../config/database";
 import { IUser } from "../entities/user";
 
@@ -8,19 +9,24 @@ export class UserRepository {
     }
 
     async register(user: IUser): Promise<IUser> {
+        const hashedPassword = await bcrypt.hash(user.password, 10);
         const result = await pool.query(
             "INSERT INTO users (name, email, password, profile_picture_url, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            [user.name, user.email, user.password, user.profile_picture_url, new Date()]
+            [user.name, user.email, hashedPassword, user.profile_picture_url, new Date()]
         );
         return result.rows[0] as IUser;
     }
 
     async login(email: string, password: string): Promise<IUser | null> {
-        console.log("service", email, password);
+        const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
-        const result = await pool.query("SELECT * FROM users WHERE email = $1 AND password = $2", [email, password]);
+        if (result.rowCount === 0) return null;
 
-        console.log("SQL ->", result.rows);
-        return result.rowCount > 0 ? (result.rows[0] as IUser) : null;
+        const user = result.rows[0] as IUser;
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) return null;
+
+        return user;
     }
 }

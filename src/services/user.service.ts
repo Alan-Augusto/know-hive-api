@@ -19,8 +19,6 @@ export class UserService extends BaseService {
   }
 
   async login(email: string, password: string): Promise<{ user: IUser, token: string } | null> {
-    console.log("service", email, password);
-
     const user:IUser = await this.userRepository.login(email, password) as IUser;
     if (user != null) {
       const token = generateToken(user);
