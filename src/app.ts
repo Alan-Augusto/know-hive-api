@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json());
 // Configurar CORS para permitir requisições de qualquer origem (ajustável conforme necessidade)
 app.use(cors({
-    origin: 'http://localhost:4200',  // Permitir requisições apenas de localhost:4200 (frontend)
+    origin: ['http://localhost:4200', 'https://know-hive.vercel.app/'],  // Permitir requisições de localhost:4200 e know-hive-api.onrender.com
     methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Ajuste os métodos conforme necessário
 }));
 
