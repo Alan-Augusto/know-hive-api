@@ -21,10 +21,20 @@ export class UserService extends BaseService {
     return await this.userRepository.register(user); // Retorna o usuário registrado
   }
 
-  async login(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<{ user: IUser, token: string } | null> {
+  async login(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<{ user: IUser, token: string } | {failed:boolean, message:string, time:number} |null> {
+    // Verificar se o usuário excedeu o limite de tentativas
+    const maxAttempts = 5; // Número máximo de tentativas permitidas
+    const timeWindowInMinutes = 15; // Janela de tempo para contar as tentativas
+    const isBlocked = await this.loginAttemptService.hasExceededFailedAttempts(email, maxAttempts, timeWindowInMinutes);
+
+    if (isBlocked) {
+      // throw new Error("Muitas tentativas de login falhas. Tente novamente mais tarde.");
+      return {failed:true, message:"Muitas tentativas de login falhas. Tente novamente mais tarde.", time:timeWindowInMinutes};
+    }
+
     const user: IUser | null = await this.userRepository.login(email);
 
-    // Verificar se o usuário existe
+    // Verificar se o usuário existe e a senha está correta
     const success = user && (await bcrypt.compare(password, user.password));
 
     // Registrar a tentativa de login

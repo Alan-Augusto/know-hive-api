@@ -51,12 +51,20 @@ router.post("/login", async (req, res) => {
     if(!email || !password) return sendError(res, "Email e senha são obrigatórios", 400);
     try {
         const result = await userService.login(email, password, req.ip, user_agent);
+        if (result && 'failed' in result && result.failed) {
+            return sendError(res, result.message, 401);
+        }
         if (!result) {
             return sendError(res, "Credenciais inválidas", 401);
         }
-        sendSuccess(res, "Login realizado com sucesso", result);
+        else if(result && 'token' in result){
+            sendSuccess(res, "Login realizado com sucesso", result);
+        }
+        else{
+            sendError(res, "Erro ao realizar login");
+        }
     } catch (error) {
-        console.error(error);
+        console.log(error);
         sendError(res, "Erro ao realizar login");
     }
 });
