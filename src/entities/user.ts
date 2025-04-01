@@ -11,4 +11,8 @@ export class User extends BaseEntity<IUser> {
   constructor(user: IUser) {
     super(user); // Chama a classe base para realizar as validações
   }
+
+  override isFieldRequired(field: string): boolean {
+    return field != 'profile_picture_url';
+  }
 }

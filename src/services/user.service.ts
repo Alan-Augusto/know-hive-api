@@ -2,9 +2,12 @@ import { IUser } from "../entities/user";
 import { UserRepository } from "../repositories/user.repository";
 import { generateToken } from "../utils/authorization.util";
 import { BaseService } from "./base.service";
+import { LoginAttemptService } from "./login-attempt.service";
+import bcrypt from "bcrypt";
 
 export class UserService extends BaseService {
   private userRepository = new UserRepository();
+  private loginAttemptService = new LoginAttemptService();
 
   async existsByEmail(email: string): Promise<boolean> {
     return await this.userRepository.existsByEmail(email);
@@ -18,12 +21,26 @@ export class UserService extends BaseService {
     return await this.userRepository.register(user); // Retorna o usuário registrado
   }
 
-  async login(email: string, password: string): Promise<{ user: IUser, token: string } | null> {
-    const user:IUser = await this.userRepository.login(email, password) as IUser;
-    if (user != null) {
+  async login(email: string, password: string, ipAddress?: string, userAgent?: string): Promise<{ user: IUser, token: string } | null> {
+    const user: IUser | null = await this.userRepository.login(email);
+
+    // Verificar se o usuário existe
+    const success = user && (await bcrypt.compare(password, user.password));
+
+    // Registrar a tentativa de login
+    await this.loginAttemptService.recordLoginAttempt(
+      user?.id, // ID do usuário, se existir
+      email,
+      !!success, // Sucesso ou falha
+      ipAddress,
+      userAgent
+    );
+
+    if (success && user) {
       const token = generateToken(user);
       return { user, token };
     }
+
     return null;
   }
 }

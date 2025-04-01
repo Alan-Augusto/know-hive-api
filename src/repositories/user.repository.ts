@@ -9,6 +9,7 @@ export class UserRepository {
     }
 
     async register(user: IUser): Promise<IUser> {
+        console.log("Registering user REPOSITORY:", user); 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const result = await pool.query(
             "INSERT INTO users (name, email, password, profile_picture_url, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *",
@@ -17,16 +18,11 @@ export class UserRepository {
         return result.rows[0] as IUser;
     }
 
-    async login(email: string, password: string): Promise<IUser | null> {
+    async login(email: string): Promise<IUser | null> {
         const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
         if (result.rowCount === 0) return null;
 
-        const user = result.rows[0] as IUser;
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) return null;
-
-        return user;
+        return result.rows[0] as IUser;
     }
 }

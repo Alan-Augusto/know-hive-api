@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { sendError } from "../utils/returns.utils";
 export interface IEntity {
-  id?: number;
+  id?: string;
   [key: string]: any;  // Permite que outras propriedades sejam adicionadas
 }
 
@@ -30,7 +30,7 @@ export class BaseEntity<T extends IEntity> {
   }
 
   // Verifica se o campo é obrigatório com base na interface
-  private isFieldRequired(field: string): boolean {
+  protected isFieldRequired(field: string): boolean {
     // Defina a lógica para saber se o campo é obrigatório. Pode ser feito via um objeto ou metadados
     return field !== 'id';  // Exemplo: todos os campos, exceto 'id', são obrigatórios
   }
