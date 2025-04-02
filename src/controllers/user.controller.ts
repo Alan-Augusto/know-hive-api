@@ -52,7 +52,7 @@ router.post("/login", async (req, res) => {
     try {
         const result = await userService.login(email, password, req.ip, user_agent);
         if (result && 'failed' in result && result.failed) {
-            return sendError(res, result.message, 401);
+            return sendSuccess(res, result.message, result);
         }
         if (!result) {
             return sendError(res, "Credenciais inválidas", 401);

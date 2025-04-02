@@ -28,8 +28,15 @@ export class UserService extends BaseService {
     const isBlocked = await this.loginAttemptService.hasExceededFailedAttempts(email, maxAttempts, timeWindowInMinutes);
 
     if (isBlocked) {
-      // throw new Error("Muitas tentativas de login falhas. Tente novamente mais tarde.");
-      return {failed:true, message:"Muitas tentativas de login falhas. Tente novamente mais tarde.", time:timeWindowInMinutes};
+      // Get the remaining time until next attempt is allowed
+      const remainingMinutes = await this.loginAttemptService.getTimeUntilNextAttempt(email, timeWindowInMinutes);
+      console.log(`User ${email} is blocked. Remaining time: ${remainingMinutes} minutes`);
+      
+      return {
+        failed: true, 
+        message: `Muitas tentativas de login falhas. Tente novamente em ${remainingMinutes} minutos.`, 
+        time: remainingMinutes
+      };
     }
 
     const user: IUser | null = await this.userRepository.login(email);

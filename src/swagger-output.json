@@ -87,6 +87,9 @@
                 },
                 "password": {
                   "example": "any"
+                },
+                "user_agent": {
+                  "example": "any"
                 }
               }
             }
