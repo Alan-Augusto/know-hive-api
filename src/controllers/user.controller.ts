@@ -50,10 +50,7 @@ router.post("/login", async (req, res) => {
     const { email, password, user_agent } = req.body;
     if(!email || !password) return sendError(res, "Email e senha são obrigatórios", 400);
     try {
-        const result = await userService.login(email, password, req.ip, user_agent);
-        if (result && 'failed' in result && result.failed) {
-            return sendSuccess(res, result.message, result);
-        }
+        const result = await userService.login(email, password);
         if (!result) {
             return sendError(res, "Credenciais inválidas", 401);
         }
